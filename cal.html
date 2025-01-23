@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Grade Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .result {
+      margin-top: 20px;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    .result p {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .result h3 {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Student Grade Calculator</h1>
+    <form id="studentForm">
+      <div class="input-group">
+        <label for="studentId">Student ID:</label>
+        <input type="text" id="studentId" required>
+      </div>
+      <div class="input-group">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" required>
+      </div>
+      <div class="input-group">
+        <label for="marks">Enter 5 Marks (separated by commas):</label>
+        <input type="text" id="marks" placeholder="e.g., 85, 92, 76, 88, 90" required>
+      </div>
+      <button type="submit" id="submitBtn">Calculate Grade</button>
+    </form>
+    <div id="result" class="result">
+    </div>
+  </div>
+  <script>
+    let student = {
+      id: '',
+      name: '',
+      marks: [],
+      total: 0,
+      percentage: 0,
+      grade: ''
+    };
+    function updateStudentDetails(id, name, marks) {
+      student.id = id;
+      student.name = name;
+      student.marks = marks;
+      student.total = calculateTotal(marks);
+      student.percentage = calculatePercentage(student.total);
+      student.grade = calculateGrade(student.percentage);
+    }
+    function calculateTotal(marks) {
+      return marks.reduce((acc, mark) => acc + mark, 0);
+    }
+    function calculatePercentage(total) {
+      return (total / 500) * 100; 
+    }
+    function calculateGrade(percentage) {
+      if (percentage > 90) {
+        return 'A';
+      } else if (percentage > 80 && percentage <= 90) {
+        return 'B';
+      } else if (percentage > 70 && percentage <= 80) {
+        return 'C';
+      } else if (percentage > 60 && percentage <= 70) {
+        return 'D';
+      } else if (percentage > 50 && percentage <= 60) {
+        return 'E';
+      } else {
+        return 'Fail';
+      }
+    }
+    function displayStudentDetails() {
+      const resultDiv = document.getElementById('result');
+    
+      resultDiv.innerHTML = `
+        <h3>Student Details</h3>
+        <p><strong>Student ID:</strong> ${student.id}</p>
+        <p><strong>Name:</strong> ${student.name}</p>
+        <p><strong>Marks:</strong> ${student.marks.join(', ')}</p>
+        <p><strong>Total Marks:</strong> ${student.total}</p>
+        <p><strong>Percentage:</strong> ${student.percentage.toFixed(2)}%</p>
+        <p><strong>Grade:</strong> ${student.grade}</p>
+      `;
+    }
+    document.getElementById('studentForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const studentId = document.getElementById('studentId').value;
+      const studentName = document.getElementById('studentName').value;
+      const marksInput = document.getElementById('marks').value;
+      
+      const marks = marksInput.split(',').map(mark => parseFloat(mark.trim()));
+
+      if (marks.length !== 5 || marks.some(isNaN)) {
+        alert('Please enter exactly 5 valid marks.');
+        return;
+      }
+      updateStudentDetails(studentId, studentName, marks);
+      displayStudentDetails();
+    });
+  </script>
+</body>
+</html>
